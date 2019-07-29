@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.UserMapper">
+    <sql id="columns">
+        u.id                 u_id,
+        u.nickname           u_nickname,
+        u.name               u_name,
+        u.phone              u_phone,
+        u.wx_open_id         u_wx_open_id,
+        u.wx_avatar          u_wx_avatar,
+        u.role               u_role,
+        u.position_longitude u_position_longitude,
+        u.position_latitude  u_position_latitude,
+        u.position           u_position,
+        u.direct_income      u_direct_income,
+        u.team_income        u_team_income,
+        u.score              u_score,
+        u.daily_login_times  u_daily_login_times,
+        u.withdrawals        u_withdrawals,
+        u.promo_code         u_promo_code,
+        u.team_header_level  u_team_header_level,
+        u.leader_id          u_leader_id,
+        u.promoter_id        u_promoter_id,
+        u.wx_token_json      u_wx_token_json,
+        u.promoter_phone     u_prompter_phone,
+        u.promoter_wx_no     u_promoter_wx_no,
+        u.promoter_name      u_promoter_name,
+        u.create_time        u_create_time,
+        u.update_time        u_update_time,
+        u.deleted            u_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_user as u
+        where u.deleted != 1
+    </sql>
+    <resultMap id="rm_base" type="club.xyes.zkh.retail.commons.entity.User">
+        <id column="u_id" property="id"/>
+        <result column="u_nickname" property="nickname"/>
+        <result column="u_name" property="name"/>
+        <result column="u_phone" property="phone"/>
+        <result column="u_wx_open_id" property="wxOpenId"/>
+        <result column="u_wx_avatar" property="wxAvatar"/>
+        <result column="u_role" property="role"/>
+        <result column="u_position_longitude" property="positionLongitude"/>
+        <result column="u_position_latitude" property="positionLatitude"/>
+        <result column="u_position" property="position"/>
+        <result column="u_direct_income" property="directIncome"/>
+        <result column="u_team_income" property="teamIncome"/>
+        <result column="u_score" property="teamIncome"/>
+        <result column="u_daily_login_times" property="dailyLoginTimes"/>
+        <result column="u_withdrawals" property="withdrawals"/>
+        <result column="u_promo_code" property="promoCode"/>
+        <result column="u_team_header_level" property="teamHeaderLevel"/>
+        <result column="u_leader_id" property="leaderId"/>
+        <result column="u_promoter_id" property="promoterId"/>
+        <result column="u_wx_token_json" property="wxTokenJson"/>
+        <result column="u_prompter_phone" property="promoterPhone"/>
+        <result column="u_promoter_wx_no" property="promoterWxNo"/>
+        <result column="u_promoter_name" property="promoterName"/>
+        <result column="u_create_time" property="createTime"/>
+        <result column="u_update_time" property="updateTime"/>
+        <result column="u_deleted" property="deleted"/>
+    </resultMap>
+    <select id="searchByNameOrNickName" resultMap="rm_base">
+        <include refid="select"/>
+        and (u.name like #{name} or u.nickname like #{name} or u.promoter_phone like #{name} or u.phone like #{name} or
+        u.promoter_name like #{name})
+    </select>
+</mapper>

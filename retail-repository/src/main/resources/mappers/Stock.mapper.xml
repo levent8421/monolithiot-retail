@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.StockMapper">
+    <sql id="columns">
+        stk.id             stk_id,
+        stk.commodity_id   stk_commodity_id,
+        stk.store_id       stk_store_id,
+        stk.action_date    stk_action_date,
+        stk.day_of_week    stk_day_of_week,
+        stk.start_time     stk_start_time,
+        stk.end_time       stk_end_time,
+        stk.stock_count    stk_stock_count,
+        stk.booked_count   stk_booked_count,
+        stk.complete_count stk_complete_count,
+        stk.create_time    stk_create_time,
+        stk.update_time    stk_update_time,
+        stk.deleted        stk_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_stock as stk
+        where stk.deleted!=1
+    </sql>
+    <resultMap id="rm" type="club.xyes.zkh.retail.commons.entity.Stock">
+        <id column="stk_id" property="id"/>
+        <result column="stk_commodity_id" property="commodityId"/>
+        <result column="stk_store_id" property="storeId"/>
+        <result column="stk_action_date" property="actionDate"/>
+        <result column="stk_day_of_week" property="dayOfWeek"/>
+        <result column="stk_start_time" property="startTime"/>
+        <result column="stk_end_time" property="endTime"/>
+        <result column="stk_stock_count" property="stockCount"/>
+        <result column="stk_booked_count" property="bookedCount"/>
+        <result column="stk_complete_count" property="completeCount"/>
+        <result column="stk_create_time" property="createTime"/>
+        <result column="stk_update_time" property="updateTime"/>
+        <result column="stk_deleted" property="deleted"/>
+    </resultMap>
+    <update id="incrementCompleteCount">
+        update t_stock as stk
+        set stk.complete_count=(stk.complete_count + 1)
+        where stk.id = #{id}
+    </update>
+    <select id="selectByStoreAndCommodity" resultMap="rm">
+        select
+        <include refid="columns"/>
+        from t_stock as stk
+        where stk.deleted!=1
+        and stk.store_id=#{storeId}
+        and stk.commodity_id=#{commodityId}
+    </select>
+    <select id="selectAvailableByStoreAndCommodity" resultMap="rm">
+        select
+        <include refid="columns"/>
+        from t_stock as stk
+        where stk.deleted!=1
+        and stk.store_id=#{storeId}
+        and stk.commodity_id=#{commodityId}
+        and stk.booked_count&lt;stk.stock_count
+        and stk.action_date >= date(now())
+        order by stk.action_date asc
+    </select>
+</mapper>

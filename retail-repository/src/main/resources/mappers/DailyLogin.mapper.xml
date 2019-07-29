@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.DailyLoginMapper">
+    <sql id="columns">
+        dl.id          dl_id,
+        dl.user_id     dl_user_id,
+        dl.login_date  dl_login_date,
+        dl.create_time dl_create_time,
+        dl.update_time dl_update_time,
+        dl.deleted     dl_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_daily_login as dl
+        where dl.deleted = false
+    </sql>
+    <resultMap id="rm_base" type="club.xyes.zkh.retail.commons.entity.DailyLogin">
+        <id column="adm_id" property="id"/>
+        <result column="adm_create_time" property="createTime"/>
+        <result column="adm_update_time" property="updateTime"/>
+        <result column="adm_deleted" property="deleted"/>
+    </resultMap>
+    <select id="countByUserAndDate" resultType="Integer">
+        select count(0)
+        from t_daily_login as dl
+        where dl.login_date = date(#{date})
+          and dl.user_id = #{userId}
+    </select>
+    <select id="selectByUserAndDateRange" resultMap="rm_base">
+        <include refid="select"/>
+        and dl.login_date between date(#{start}) and date(#{end}) and dl.user_id=#{userId}
+        order by dl.login_date asc
+    </select>
+</mapper>

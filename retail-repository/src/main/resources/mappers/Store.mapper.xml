@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.StoreMapper">
+    <sql id="columns">
+        s.id               s_id,
+        s.name             s_name,
+        s.keeper_name      s_keeper_name,
+        s.phone            s_phone,
+        s.longitude        s_longitude,
+        s.latitude         s_latitude,
+        s.province         s_province,
+        s.city             s_city,
+        s.region           s_region,
+        s.address          s_address,
+        s.address_index_id s_address_index_id,
+        s.order_num        s_order_num,
+        s.login_name       s_login_name,
+        s.password         s_password,
+        s.wx_open_id       s_wx_open_id,
+        s.create_time      s_create_time,
+        s.update_time      s_update_time,
+        s.deleted          s_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_store as s
+        where s.deleted = false
+    </sql>
+    <update id="cleanOpenId">
+        update t_store
+        set wx_open_id= null
+        where wx_open_id = #{openId}
+    </update>
+    <resultMap id="base" type="club.xyes.zkh.retail.commons.entity.Store">
+        <id column="s_id" property="id"/>
+        <result column="s_name" property="name"/>
+        <result column="s_keeper_name" property="keeperName"/>
+        <result column="s_phone" property="phone"/>
+        <result column="s_longitude" property="longitude"/>
+        <result column="s_latitude" property="latitude"/>
+        <result column="s_province" property="province"/>
+        <result column="s_city" property="city"/>
+        <result column="s_region" property="region"/>
+        <result column="s_address" property="address"/>
+        <result column="s_address_index_id" property="addressIndexId"/>
+        <result column="s_order_num" property="orderNum"/>
+        <result column="s_login_name" property="loginName"/>
+        <result column="s_password" property="password"/>
+        <result column="s_create_time" property="createTime"/>
+        <result column="s_update_time" property="updateTime"/>
+        <result column="s_deleted" property="deleted"/>
+    </resultMap>
+    <resultMap id="rm_all" type="club.xyes.zkh.retail.commons.entity.Store" extends="base">
+        <association property="addressIndex"
+                     resultMap="club.xyes.zkh.retail.repository.dao.mapper.AddressIndexMapper.rm"/>
+    </resultMap>
+    <select id="findLikeOpenId" resultMap="base">
+        <include refid="select"/>
+        and s.wx_open_id like #{openId}
+    </select>
+    <select id="selectFetchAll" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.AddressIndexMapper.columns"/>
+        from t_store as s left outer join t_address_index as ai on s.address_index_id=ai.id
+        order by s.create_time desc
+    </select>
+</mapper>

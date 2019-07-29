@@ -1,0 +1,28 @@
+server:
+  port: 8003
+spring:
+  profiles:
+    active: @activationProfile@
+  application:
+    name: e-commerce-api
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+  freemarker:
+    suffix: .html
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+pagehelper:
+  helper-dialect: mysql
+mybatis:
+  mapper-locations: classpath:mappers/*.mapper.xml
+  type-aliases-package: club.xyes.zkh.retail.common.entity
+wx:
+  appId: wx45725d38c171c33f
+  secret: 860329c6675c5a7ac587e0533a57f188
+  mchId: 1538466881
+  ip: 47.101.72.16
+  notifyUrl: http://wz.jinguanjiazhifu.com/retail/service/pay/notify
+  signKey: 940647dfe9e43f176ce4dd9afde713d5
+sms:
+  apiKey: 39c8673e0f6be3d248c6443205684a54

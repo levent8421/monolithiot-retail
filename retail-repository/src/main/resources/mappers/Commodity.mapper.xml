@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper">
+    <sql id="columns">
+        c.id c_id,
+        c.store_id c_store_id,
+        c.buy_limit c_buy_limit,
+        c.name c_name,
+        c.description c_description,
+        c.images c_images,
+        c.share_image c_share_image,
+        c.original_price c_original_price,
+        c.current_price c_current_price,
+        c.stock_count c_stock_count,
+        c.sale_count c_sale_count,
+        c.commission_1 c_commission_1,
+        c.commission_2 c_commission_2,
+        c.commission_3 c_commission_3,
+        c.need_appointment c_need_appointment,
+        c.buy_end_time c_buy_end_time,
+        c.appointment_start_time c_appointment_start_time,
+        c.appointment_end_time c_appointment_end_time,
+        c.status c_status,
+        c.create_time c_create_time,
+        c.update_time c_update_time,
+        c.deleted c_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_commodity as c
+        where c.deleted != 1
+    </sql>
+    <sql id="select_with_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StoreMapper.columns"/>
+        from t_commodity as c
+        left outer join t_store s on c.store_id = s.id
+        where c.deleted != 1
+        and s.deleted != 1
+    </sql>
+    <resultMap id="base" type="club.xyes.zkh.retail.commons.entity.Commodity">
+        <id column="c_id" property="id"/>
+        <result column="c_store_id" property="storeId"/>
+        <result column="c_buy_limit" property="buyLimit"/>
+        <result column="c_name" property="name"/>
+        <result column="c_description" property="description"/>
+        <result column="c_images" property="images"/>
+        <result column="c_share_image" property="shareImage"/>
+        <result column="c_original_price" property="originalPrice"/>
+        <result column="c_current_price" property="currentPrice"/>
+        <result column="c_stock_count" property="stockCount"/>
+        <result column="c_sale_count" property="saleCount"/>
+        <result column="c_commission_1" property="commission1"/>
+        <result column="c_commission_2" property="commission2"/>
+        <result column="c_commission_3" property="commission3"/>
+        <result column="c_need_appointment" property="needAppointment"/>
+        <result column="c_buy_end_time" property="buyEndTime"/>
+        <result column="c_appointment_start_time" property="appointmentStartTime"/>
+        <result column="c_appointment_end_time" property="appointmentEndTime"/>
+        <result column="c_status" property="status"/>
+        <result column="c_create_time" property="createTime"/>
+        <result column="c_update_time" property="updateTime"/>
+        <result column="c_deleted" property="deleted"/>
+    </resultMap>
+    <resultMap id="rm_with_all" type="club.xyes.zkh.retail.commons.entity.Commodity"
+               extends="base">
+        <association property="store" javaType="club.xyes.zkh.retail.commons.entity.Store">
+            <id column="s_id" property="id"/>
+            <result column="s_name" property="name"/>
+            <result column="s_keeper_name" property="keeperName"/>
+            <result column="s_phone" property="phone"/>
+            <result column="s_longitude" property="longitude"/>
+            <result column="s_latitude" property="latitude"/>
+            <result column="s_province" property="province"/>
+            <result column="s_city" property="city"/>
+            <result column="s_region" property="region"/>
+            <result column="s_address" property="address"/>
+            <result column="s_login_name" property="loginName"/>
+            <result column="s_password" property="password"/>
+            <result column="s_create_time" property="createTime"/>
+            <result column="s_update_time" property="updateTime"/>
+            <result column="s_deleted" property="deleted"/>
+        </association>
+    </resultMap>
+    <resultMap id="rm_with_distance" type="club.xyes.zkh.retail.commons.vo.CommodityWithDistance" extends="base">
+        <result column="distance" property="distance"/>
+    </resultMap>
+    <select id="selectAvailableOrderByCreateTimeDesc" resultMap="base">
+        <include refid="select"/>
+        order by c.create_time desc
+    </select>
+    <select id="selectByIdFetchAll" resultMap="rm_with_all">
+        <include refid="select_with_all"/>
+        and c.id=#{id}
+    </select>
+    <select id="searchByName" resultMap="base">
+        <include refid="select"/>
+        and c.name like #{name}
+    </select>
+    <update id="appendImage">
+        update t_commodity as c
+        set c.images =
+                (case
+                     when c.images is null then #{filename}
+                     else concat(c.images, ',', #{filename})
+                    end)
+        where c.id = #{id}
+    </update>
+    <update id="updateStock">
+        update t_commodity as c
+        set c.stock_count = (c.stock_count - #{amount}),
+            c.sale_count  = (c.sale_count + #{amount})
+        where c.id = #{id}
+    </update>
+    <select id="selectByAddressIndex" resultMap="base">
+        select
+        <include refid="columns"/>
+        from t_commodity as c left outer join t_store as s
+        on c.store_id=s.id
+        where c.deleted=false and s.deleted=false and s.address_index_id=#{addressIndexId}
+        order by c.create_time desc
+    </select>
+    <select id="selectByDistance" resultMap="rm_with_distance">
+        select
+        <include refid="columns"/>,
+        ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((#{lat} * PI() / 180 - s.latitude * PI() / 180) / 2), 2) +
+        COS(#{lat} * PI() / 180) * COS(s.latitude * PI() / 180) *
+        POW(SIN((#{lon} * PI() / 180 - s.longitude * PI() / 180) / 2), 2))) *
+        1000) as distance
+        from t_commodity as c
+        left outer join t_store as s on s.id = c.store_id
+        where s.deleted = false
+        and c.deleted = false
+        having distance &lt; #{range}
+        order by distance asc, c.create_time desc
+    </select>
+    <select id="selectByDistance_COUNT" resultType="Long">
+        select count(0)
+        from (select ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((${lat} * PI() / 180 - s.latitude * PI() / 180) / 2), 2) +
+                                                    COS(${lat} * PI() / 180) * COS(s.latitude * PI() / 180) *
+                                                    POW(SIN((${lon} * PI() / 180 - s.longitude * PI() / 180) / 2), 2))) *
+                           1000) as distance
+              from t_commodity as c
+                       left outer join t_store as s on s.id = c.store_id
+              where s.deleted = false
+                and c.deleted = false
+              having distance &lt; ${range}) as tmp;
+    </select>
+</mapper>

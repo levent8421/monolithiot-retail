@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.AddressIndexMapper">
+    <sql id="columns">
+        ai.id            ai_id,
+        ai.province      ai_province,
+        ai.city          ai_city,
+        ai.city_code     ai_city_code,
+        ai.district      ai_district,
+        ai.district_code ai_district_code,
+        ai.create_time   ai_create_time,
+        ai.update_time   ai_update_time,
+        ai.deleted       ai_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_address_index as ai
+        where ai.deleted = false
+    </sql>
+    <resultMap id="rm" type="club.xyes.zkh.retail.commons.entity.AddressIndex">
+        <id column="ai_id" property="id"/>
+        <result column="ai_province" property="province"/>
+        <result column="ai_city" property="city"/>
+        <result column="ai_city_code" property="cityCode"/>
+        <result column="ai_district" property="district"/>
+        <result column="ai_district_code" property="districtCode"/>
+        <result column="ai_create_time" property="createTime"/>
+        <result column="ai_update_time" property="updateTime"/>
+        <result column="ai_deleted" property="deleted"/>
+    </resultMap>
+    <select id="selectByCityCodeAndDistrictCode" resultMap="rm">
+        <include refid="select"/>
+        and ai.city_code=#{cityCode}
+        and
+        <choose>
+            <when test="districtCode==null">
+                ai.district_code is null
+            </when>
+            <otherwise>
+                ai.district_code = #{districtCode}
+            </otherwise>
+        </choose>
+    </select>
+    <select id="selectLikeCityCodeAndDistrictCode" resultMap="rm">
+        <include refid="select"/>
+        and (ai.city_code=#{cityCode} or ai.district_code=#{districtCode})
+    </select>
+</mapper>

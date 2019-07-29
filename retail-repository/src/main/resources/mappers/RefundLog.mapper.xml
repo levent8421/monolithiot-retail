@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.RefundLogMapper">
+    <sql id="columns">
+        rl.id            rl_id,
+        rl.trade_no      rl_trade_no,
+        rl.order_id      rl_order_id,
+        rl.order_amount  rl_order_amount,
+        rl.refund_amount rl_refund_amount,
+        rl.complete_time rl_complete_time,
+        rl.status        rl_status,
+        rl.create_time   rl_create_time,
+        rl.update_time   rl_update_time,
+        rl.deleted       rl_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_refund_log as rl
+        where rl.deleted!=1
+    </sql>
+    <resultMap id="rm" type="club.xyes.zkh.retail.commons.entity.RefundLog">
+        <id column="rl_id" property="id"/>
+        <result column="rl_trade_no" property="tradeNo"/>
+        <result column="rl_order_id" property="orderId"/>
+        <result column="rl_order_amount" property="orderAmount"/>
+        <result column="rl_refund_amount" property="refundAmount"/>
+        <result column="rl_complete_time" property="completeTime"/>
+        <result column="rl_status" property="status"/>
+        <result column="rl_create_time" property="createTime"/>
+        <result column="rl_update_time" property="updateTime"/>
+        <result column="rl_deleted" property="deleted"/>
+    </resultMap>
+</mapper>

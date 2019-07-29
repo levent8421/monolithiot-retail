@@ -1,0 +1,89 @@
+{
+  "properties": [
+    {
+      "name": "wx.appId",
+      "type": "java.lang.String",
+      "description": "微信公总号AppId."
+    },
+    {
+      "name": "wx.secret",
+      "type": "java.lang.String",
+      "description": "微信公众号Secret."
+    },
+    {
+      "name": "site.staticServer",
+      "type": "java.lang.String",
+      "description": "静态资源服务器地址."
+    },
+    {
+      "name": "site.staticFilePath",
+      "type": "java.lang.String",
+      "description": "静态资源保存根目录."
+    },
+    {
+      "name": "saobei.baseUrl",
+      "type": "java.lang.String",
+      "description": "api基础路径."
+    },
+    {
+      "name": "saobei.appId",
+      "type": "java.lang.String",
+      "description": "公众号APPID."
+    },
+    {
+      "name": "saobei.merchantNo",
+      "type": "java.lang.String",
+      "description": "商户号."
+    },
+    {
+      "name": "saobei.terminalId",
+      "type": "java.lang.String",
+      "description": "终端号."
+    },
+    {
+      "name": "saobei.notifyUrl",
+      "type": "java.lang.String",
+      "description": "支付结果通知地址."
+    },
+    {
+      "name": "saobei.token",
+      "type": "java.lang.String",
+      "description": "接口令牌."
+    },
+    {
+      "name": "wx.mchId",
+      "type": "java.lang.String",
+      "description": "商户号."
+    },
+    {
+      "name": "wx.ip",
+      "type": "java.lang.String",
+      "description": "服务器IP."
+    },
+    {
+      "name": "wx.notifyUrl",
+      "type": "java.lang.String",
+      "description": "支付通知地址."
+    },
+    {
+      "name": "wx.signKey",
+      "type": "java.lang.String",
+      "description": "签名秘钥."
+    },
+    {
+      "name": "wx.keyFile",
+      "type": "java.lang.String",
+      "description": "证书文件路径."
+    },
+    {
+      "name": "wx.keyPassword",
+      "type": "java.lang.String",
+      "description": "证书密码."
+    },
+    {
+      "name": "wx.refundNotifyUrl",
+      "type": "java.lang.String",
+      "description": "退款通知地址."
+    }
+  ]
+}

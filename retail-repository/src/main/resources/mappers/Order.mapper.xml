@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.OrderMapper">
+    <sql id="columns">
+        o.id                    o_id,
+        o.user_id               o_user_id,
+        o.promoter_id           o_promoter_id,
+        o.promoter_2_id         o_promoter_2_id,
+        o.promoter_3_id         o_promoter_3_id,
+        o.commodity_id          o_commodity_id,
+        o.quantity              o_quantity,
+        o.store_id              o_store_id,
+        o.amount                o_amount,
+        o.offline_payment_amount o_offline_payment_amount,
+        o.username              o_username,
+        o.phone                 o_phone,
+        o.sn                    o_sn,
+        o.trade_no              o_trade_no,
+        o.commodity_name        o_commodity_name,
+        o.commodity_description o_commodity_description,
+        o.status                o_status,
+        o.appointment_stock_id  o_appointment_stock_id,
+        o.complete_time         o_complete_time,
+        o.create_time           o_create_time,
+        o.update_time           o_update_time,
+        o.deleted               o_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_order as o
+        where o.deleted != 1
+    </sql>
+    <resultMap id="rm_base" type="club.xyes.zkh.retail.commons.entity.Order">
+        <id column="o_id" property="id"/>
+        <result column="o_user_id" property="userId"/>
+        <result column="o_promoter_id" property="promoterId"/>
+        <result column="o_promoter_2_id" property="promoter2Id"/>
+        <result column="o_promoter_3_id" property="promoter3Id"/>
+        <result column="o_commodity_id" property="commodityId"/>
+        <result column="o_quantity" property="quantity"/>
+        <result column="o_store_id" property="storeId"/>
+        <result column="o_amount" property="amount"/>
+        <result column="o_offline_payment_amount" property="offlinePaymentAmount"/>
+        <result column="o_username" property="username"/>
+        <result column="o_phone" property="phone"/>
+        <result column="o_sn" property="sn"/>
+        <result column="o_trade_no" property="tradeNo"/>
+        <result column="o_commodity_name" property="commodityName"/>
+        <result column="o_commodity_description" property="commodityDescription"/>
+        <result column="o_status" property="status"/>
+        <result column="o_appointment_stock_id" property="appointmentStockId"/>
+        <result column="o_complete_time" property="completeTime"/>
+        <result column="o_create_time" property="createTime"/>
+        <result column="o_update_time" property="updateTime"/>
+        <result column="o_deleted" property="deleted"/>
+    </resultMap>
+    <resultMap id="rm_select" type="club.xyes.zkh.retail.commons.entity.Order" extends="rm_base">
+        <association column="o_user_id" property="user"
+                     select="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.selectByPrimaryKey"/>
+        <association column="o_store_id" property="store"
+                     select="club.xyes.zkh.retail.repository.dao.mapper.StoreMapper.selectByPrimaryKey"/>
+        <association column="o_commodity_id" property="commodity"
+                     select="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.selectByPrimaryKey"/>
+    </resultMap>
+    <resultMap id="rm_all" type="club.xyes.zkh.retail.commons.entity.Order" extends="rm_base">
+        <association property="user" javaType="club.xyes.zkh.retail.commons.entity.User"
+                     resultMap="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.rm_base"/>
+        <association property="commodity" javaType="club.xyes.zkh.retail.commons.entity.Commodity"
+                     resultMap="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.base"/>
+        <association property="appointmentStock" javaType="club.xyes.zkh.retail.commons.entity.Stock"
+                     resultMap="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.rm"/>
+    </resultMap>
+    <select id="selectByUserId" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted!=1 and c.deleted!=1 and u.deleted!=1
+        and o.user_id=#{userId}
+        and o.status!=0
+        order by o.create_time desc
+    </select>
+    <select id="selectByUserIdAndStatus" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted!=1 and c.deleted!=1 and u.deleted!=1
+        and o.user_id=#{userId}
+        and o.status=#{status}
+        order by o.create_time desc
+    </select>
+    <resultMap id="rmCountAmount" type="club.xyes.zkh.retail.commons.dto.CountAndAmount">
+        <result column="o_count" property="count"/>
+        <result column="o_amount" property="amount"/>
+    </resultMap>
+    <select id="totalSalesAndAmount" resultMap="rmCountAmount">
+        select count(0)      as o_count,
+               sum(o.amount) as o_amount
+        from t_order as o
+        where o.deleted != 1
+          and o.store_id = #{storeId}
+          and (o.status = 1 or o.status = 2 or o.status = 3 or o.status = 4)
+    </select>
+    <select id="salesAndAmountByDate" resultMap="rmCountAmount">
+        select count(0)      as o_count,
+               sum(o.amount) as o_amount
+        from t_order as o
+        where o.deleted != 1
+          and o.store_id = #{storeId}
+          and (o.status = 1 or o.status = 2 or o.status = 3 or o.status = 4)
+          and date(o.create_time) = date(#{date})
+    </select>
+    <select id="totalCompleteCountAndAmount" resultMap="rmCountAmount">
+        select count(0)      as o_count,
+               sum(o.amount) as o_amount
+        from t_order as o
+        where o.deleted != 1
+          and o.store_id = #{storeId}
+          and o.status = 4
+    </select>
+    <select id="completeCountAndAmountByDate" resultMap="rmCountAmount">
+        select count(0)      as o_count,
+               sum(o.amount) as o_amount
+        from t_order as o
+        where o.deleted != 1
+          and o.store_id = #{storeId}
+          and o.status = 4
+          and date(o.complete_time) = date(#{date})
+    </select>
+    <select id="selectByPromoterId" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted!=1 and c.deleted!=1 and u.deleted!=1
+        and (o.promoter_id=#{promoterId} or o.promoter_2_id=#{promoterId} or o.promoter_3_id=#{promoterId})
+        and (o.status=1 or o.status=2 or o.status=3 or o.status=4)
+        order by o.create_time desc
+    </select>
+    <select id="selectByStoreId" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted!=1 and c.deleted!=1 and u.deleted!=1
+        and o.store_id=#{storeId}
+    </select>
+    <select id="selectTomorrowAppointOrdersByStore" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted!=1 and c.deleted!=1 and u.deleted!=1
+        and o.status=3 and o.store_id=#{storeId} and stk.action_date=date(date_add(now(), interval 1 day))
+        order by o.create_time asc
+    </select>
+    <select id="selectByStoreAndDate" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted=false and c.deleted=false and u.deleted=false
+        and o.status=3 and o.store_id=#{storeId} and stk.action_date=date(#{date})
+        order by o.create_time asc
+    </select>
+    <select id="selectFetchAll" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted=false and c.deleted=false and u.deleted=false
+        order by o.create_time desc
+    </select>
+    <select id="search" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted=false and c.deleted=false and u.deleted=false
+        and (o.username like #{query} or o.phone like #{query} or o.trade_no like #{query})
+        order by o.create_time desc
+    </select>
+    <select id="selectByIdFetchAll" resultMap="rm_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.CommodityMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.StockMapper.columns"/>
+        from t_order as o
+        left outer join t_commodity as c on o.commodity_id=c.id
+        left outer join t_user as u on o.user_id=u.id
+        left outer join t_stock as stk on o.appointment_stock_id=stk.id
+        where o.deleted=false and c.deleted=false and u.deleted=false
+        and o.id=#{id}
+        order by o.create_time desc
+    </select>
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.CashApplicationMapper">
+    <sql id="select">
+        select ca.id          ca_id,
+               ca.user_id     ca_user_id,
+               ca.amount      ca_amount,
+               ca.status      ca_status,
+               ca.create_time ca_create_time,
+               ca.update_time ca_update_time,
+               ca.deleted     ca_deleted
+        from t_cash_application as ca
+        where ca.deleted != 1
+    </sql>
+    <sql id="selectWithUser">
+        select ca.id ca_id,
+        ca.user_id ca_user_id,
+        ca.amount ca_amount,
+        ca.status ca_status,
+        ca.create_time ca_create_time,
+        ca.update_time ca_update_time,
+        ca.deleted ca_deleted,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>
+        from t_cash_application as ca
+        left outer join t_user as u on ca.user_id = u.id
+        where u.deleted != 1
+        and ca.deleted != 1
+    </sql>
+    <resultMap id="rm_base" type="club.xyes.zkh.retail.commons.entity.CashApplication">
+        <id column="ca_id" property="id"/>
+        <result column="ca_user_id" property="userId"/>
+        <result column="ca_amount" property="amount"/>
+        <result column="ca_status" property="status"/>
+        <result column="ca_create_time" property="createTime"/>
+        <result column="ca_update_time" property="updateTime"/>
+        <result column="ca_deleted" property="deleted"/>
+    </resultMap>
+    <resultMap id="rmWithUser" type="club.xyes.zkh.retail.commons.entity.CashApplication" extends="rm_base">
+        <association property="user" javaType="club.xyes.zkh.retail.commons.entity.User"
+                     resultMap="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.rm_base"/>
+    </resultMap>
+    <select id="selectByStatusWithUser" resultMap="rmWithUser">
+        <include refid="selectWithUser"/>
+        and ca.status=#{status}
+        order by ca.create_time asc
+    </select>
+    <select id="selectLastOneByUserId" resultMap="rm_base">
+        <include refid="select"/>
+        and ca.user_id=#{userId}
+        order by ca_create_time desc
+        limit 1
+    </select>
+    <select id="search" resultMap="rmWithUser">
+        <include refid="selectWithUser"/>
+        and (
+        u.promoter_name like #{search}
+        or u.promoter_phone like #{search}
+        or u.promoter_wx_no like #{search})
+    </select>
+</mapper>

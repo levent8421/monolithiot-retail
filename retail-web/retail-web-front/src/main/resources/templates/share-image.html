@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>${commodity.name}_${promoter.promoterName}</title>
+</head>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+    }
+
+    .image-wrapper {
+        margin: 0;
+        padding: 0;
+    }
+
+    .image-wrapper .share-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .image-wrapper figcaption {
+        width: 100%;
+        margin: 0;
+        padding: 10px 10px 10px auto;
+        text-align: right;
+    }
+
+    footer {
+        border-top: 1px solid #666666;
+        margin: 0;
+        padding: 0;
+    }
+
+    footer p {
+        text-align: center;
+    }
+</style>
+<body>
+<figure class="image-wrapper">
+    <img src="${imageUrl}" alt="分享图片" class="share-image">
+    <!-- <figcaption>
+         <p>By: ${promoter.nickname}</p>
+     </figcaption>-->
+</figure>
+<!--<footer>
+    <p>Power by : 江苏智客汇-小龙侠优品</p>
+</footer>-->
+</body>
+</html>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="club.xyes.zkh.retail.repository.dao.mapper.CommissionLogMapper">
+    <sql id="columns">
+        cl.id          cl_id,
+        cl.order_id    cl_order_id,
+        cl.promoter_id cl_promoter_id,
+        cl.amount      cl_amount,
+        cl.reason      cl_reason,
+        cl.status      cl_status,
+        cl.create_time cl_create_time,
+        cl.update_time cl_update_time,
+        cl.deleted     cl_deleted
+    </sql>
+    <sql id="select">
+        select
+        <include refid="columns"/>
+        from t_commission_log as cl
+        where cl.deleted!=1
+    </sql>
+    <sql id="select_all">
+        select
+        <include refid="columns"/>,
+        <include refid="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.columns"/>
+        from t_commission_log as cl left outer join t_user as u on cl.promoter_id=u.id
+        where cl.deleted=false and u.deleted=false
+    </sql>
+    <resultMap id="base" type="club.xyes.zkh.retail.commons.entity.CommissionLog">
+        <id column="cl_id" property="id"/>
+        <result column="cl_order_id" property="orderId"/>
+        <result column="cl_promoter_id" property="promoterId"/>
+        <result column="cl_amount" property="amount"/>
+        <result column="cl_reason" property="reason"/>
+        <result column="cl_status" property="status"/>
+        <result column="cl_create_time" property="createTime"/>
+        <result column="cl_update_time" property="updateTime"/>
+        <result column="cl_deleted" property="deleted"/>
+    </resultMap>
+    <resultMap id="rm_all" type="club.xyes.zkh.retail.commons.entity.CommissionLog" extends="base">
+        <association property="promoter" resultMap="club.xyes.zkh.retail.repository.dao.mapper.UserMapper.rm_base"/>
+    </resultMap>
+    <select id="selectByOrderIdFetchAll" resultMap="rm_all">
+        <include refid="select_all"/>
+        and cl.order_id=#{orderId}
+    </select>
+</mapper>
