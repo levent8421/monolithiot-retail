@@ -18,6 +18,8 @@ import club.xyes.zkh.retail.wechat.dto.WxTemplateMsgParam;
 import club.xyes.zkh.retail.wechat.dto.WxTemplateMsgResult;
 import com.yunpian.sdk.model.SmsSingleSend;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import lombok.var;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -65,10 +67,26 @@ public class PaySuccessListenerImpl implements OrderService.PaySuccessListener {
     @Override
     public void onPaySuccess(Order order) {
         log.debug("Pay success {}", order);
-        @NotNull Commodity commodity = commodityService.require(order.getCommodityId());
+        val commodity = commodityService.require(order.getCommodityId());
+        val user = userService.require(order.getUserId());
+        updateUserScore(user);
         updateStock(commodity);
         updateOrderStatus(order, commodity);
         doReturnCommission(order, commodity);
+    }
+
+    /**
+     * 更新用户的积分
+     *
+     * @param user 用户
+     */
+    private void updateUserScore(User user) {
+        var score = user.getScore() == null ? 0 : user.getScore();
+        if (Objects.equals(user.getRole(), User.ROLE_USER)) {
+            score += ApplicationConstants.COMMISSION_SCORE;
+        }
+        user.setScore(score);
+        userService.updateById(user);
     }
 
     /**

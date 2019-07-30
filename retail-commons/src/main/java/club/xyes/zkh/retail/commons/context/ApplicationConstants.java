@@ -1,6 +1,8 @@
 package club.xyes.zkh.retail.commons.context;
 
 import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -15,7 +17,7 @@ public class ApplicationConstants {
     /**
      * 访问地址
      */
-    public static final String BASE_URL = "http://wz.jinguanjiazhifu.com/retail";
+    public static final String BASE_URL = "http://wxapi.berrontech.com";
     /**
      * 默认时区
      */
@@ -56,6 +58,14 @@ public class ApplicationConstants {
      * OpenId分隔符
      */
     public static final String OPEN_ID_DELIMITER = ",";
+    /**
+     * 签到返积分规则
+     */
+    public static final List<Integer> DAILY_LOGIN_SCORE_LIST = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
+    /**
+     * 购买积分
+     */
+    public static final int COMMISSION_SCORE = 10;
 
     /**
      * 上下文 系统常量

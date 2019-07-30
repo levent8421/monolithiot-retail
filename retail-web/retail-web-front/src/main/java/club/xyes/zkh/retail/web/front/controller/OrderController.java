@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static club.xyes.zkh.retail.commons.utils.ParamChecker.notEmpty;
 import static club.xyes.zkh.retail.commons.utils.ParamChecker.notNull;
 
 /**
@@ -121,9 +122,10 @@ public class OrderController extends AbstractEntityController<Order> {
     public GeneralResult<Order> create(@RequestBody OrderCreateVo param) {
         notNull(param, BadRequestException.class, "参数未传");
         notNull(param.getCommodityId(), BadRequestException.class, "商品ID必填");
-        notNull(param.getPhone(), BadRequestException.class, "电话必填");
+        notEmpty(param.getPhone(), BadRequestException.class, "电话必填");
         notNull(param.getQuantity(), BadRequestException.class, "购买数量必填");
-        notNull(param.getUsername(), BadRequestException.class, "姓名必填");
+        notEmpty(param.getUsername(), BadRequestException.class, "姓名必填");
+        notEmpty(param.getAddress(), BadRequestException.class, "收货地址必填！");
         @NotNull Commodity commodity = commodityService.require(param.getCommodityId());
         @NotNull User user = requireCurrentUser(userService);
         Order order = createOrder(user, commodity, param);
@@ -160,6 +162,7 @@ public class OrderController extends AbstractEntityController<Order> {
         order.setPhone(param.getPhone());
         //商铺ID 冗余存储
         order.setStoreId(commodity.getStoreId());
+        order.setAddress(param.getAddress());
 
         //处理推广关系
         if (!TextUtils.isTrimedEmpty(param.getPromoCode())) {

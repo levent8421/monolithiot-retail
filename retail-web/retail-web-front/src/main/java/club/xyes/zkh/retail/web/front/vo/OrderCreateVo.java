@@ -21,9 +21,9 @@ public class OrderCreateVo {
      */
     private String phone;
     /**
-     * 备注
+     * 送货地址
      */
-    private String description;
+    private String address;
     /**
      * 商品ID
      */

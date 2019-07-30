@@ -1,5 +1,6 @@
 package club.xyes.zkh.retail.service.general.impl;
 
+import club.xyes.zkh.retail.commons.context.ApplicationConstants;
 import club.xyes.zkh.retail.commons.entity.DailyLogin;
 import club.xyes.zkh.retail.commons.entity.User;
 import club.xyes.zkh.retail.commons.exception.BadRequestException;
@@ -8,6 +9,7 @@ import club.xyes.zkh.retail.repository.dao.mapper.DailyLoginMapper;
 import club.xyes.zkh.retail.service.basic.impl.AbstractServiceImpl;
 import club.xyes.zkh.retail.service.general.DailyLoginService;
 import lombok.val;
+import lombok.var;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -35,7 +37,7 @@ public class DailyLoginServiceImpl extends AbstractServiceImpl<DailyLogin> imple
     public DailyLogin checkIn(User user) {
         val now = DateTimeUtils.now();
         if (signInToday(user.getId(), now)) {
-            throw new BadRequestException("今日已登录过");
+            throw new BadRequestException("今日已签到！");
         }
         if (user.getDailyLoginTimes() == null) {
             user.setDailyLoginTimes(0);
@@ -45,7 +47,7 @@ public class DailyLoginServiceImpl extends AbstractServiceImpl<DailyLogin> imple
         } else {
             user.setDailyLoginTimes(1);
         }
-
+        updateLoginScore(user);
         val res = new DailyLogin();
         res.setLoginDate(now);
         res.setUser(user);
@@ -88,5 +90,20 @@ public class DailyLoginServiceImpl extends AbstractServiceImpl<DailyLogin> imple
         val today = calendar.getTime();
         val count = dailyLoginMapper.countByUserAndDate(userId, today);
         return count > 0;
+    }
+
+    /**
+     * 更新用户的每日登录积分 注意 不会更新数据库
+     *
+     * @param user 用户
+     */
+    private void updateLoginScore(User user) {
+        var score = user.getScore() == null ? 0 : user.getScore();
+        if (user.getDailyLoginTimes() >= ApplicationConstants.DAILY_LOGIN_SCORE_LIST.size()) {
+            score += ApplicationConstants.DAILY_LOGIN_SCORE_LIST.get(ApplicationConstants.DAILY_LOGIN_SCORE_LIST.size() - 1);
+        } else {
+            score += ApplicationConstants.DAILY_LOGIN_SCORE_LIST.get(user.getDailyLoginTimes());
+        }
+        user.setScore(score);
     }
 }

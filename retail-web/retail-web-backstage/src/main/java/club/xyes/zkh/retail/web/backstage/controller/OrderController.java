@@ -30,13 +30,17 @@ public class OrderController extends AbstractEntityController<Order> {
     private final OrderService orderService;
     private final OrderService.OrderAppointmentListener orderAppointmentListener;
     private final CommissionLogService commissionLogService;
+    private final OrderService.OrderCompleteListener orderCompleteListener;
 
     public OrderController(OrderService orderService,
-                           OrderService.OrderAppointmentListener orderAppointmentListener, CommissionLogService commissionLogService) {
+                           OrderService.OrderAppointmentListener orderAppointmentListener,
+                           CommissionLogService commissionLogService,
+                           OrderService.OrderCompleteListener orderCompleteListener) {
         super(orderService);
         this.orderService = orderService;
         this.orderAppointmentListener = orderAppointmentListener;
         this.commissionLogService = commissionLogService;
+        this.orderCompleteListener = orderCompleteListener;
     }
 
     /**
@@ -118,6 +122,19 @@ public class OrderController extends AbstractEntityController<Order> {
         val commissionLogList = commissionLogService.findByOrderFetchAll(order.getId());
         res.put("order", order);
         res.put("commission", commissionLogList);
+        return GeneralResult.ok(res);
+    }
+
+    /**
+     * 核销订单
+     *
+     * @param id ID
+     * @return GR
+     */
+    @PostMapping("/{id}/complete")
+    public GeneralResult<Order> complete(@PathVariable("id") Integer id) {
+        val order = orderService.require(id);
+        val res = orderService.complete(order, orderCompleteListener);
         return GeneralResult.ok(res);
     }
 }

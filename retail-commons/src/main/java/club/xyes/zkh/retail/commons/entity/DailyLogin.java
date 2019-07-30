@@ -1,5 +1,7 @@
 package club.xyes.zkh.retail.commons.entity;
 
+import club.xyes.zkh.retail.commons.context.ApplicationConstants;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -31,6 +33,7 @@ public class DailyLogin extends AbstractEntity {
     /**
      * 登录时间（仅保存日期）
      */
+    @JsonFormat(pattern = ApplicationConstants.DATE_FORMAT)
     @Column(name = "login_date", nullable = false)
     private Date loginDate;
 }

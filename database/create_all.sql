@@ -1,264 +1,299 @@
-/*==============================================================*/
-/* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2019/5/18 星期六 10:44:41                       */
-/*==============================================================*/
+-- MySQL dump 10.13  Distrib 5.6.37, for Linux (x86_64)
+--
+-- Host: rm-uf668ux4p0c3o3lj2.mysql.rds.aliyuncs.com    Database: db_retail
+-- ------------------------------------------------------
+-- Server version	5.6.16-log
 
-drop table if exists t_order;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
+SET @@SESSION.SQL_LOG_BIN= 0;
 
-drop table if exists t_cash_application;
+--
+-- GTID state at the beginning of the backup
+--
 
-drop table if exists t_general_time_slot;
+SET @@GLOBAL.GTID_PURGED='324b8bf8-350a-11e9-bcb8-506b4b47c1ac:1-23490928,
+325df890-350a-11e9-bcb8-98039b46e328:1-1076897';
 
-drop table if exists t_general_time_range;
+--
+-- Table structure for table `t_address_index`
+--
 
-drop table if exists t_special_time_slot;
+DROP TABLE IF EXISTS `t_address_index`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_address_index` (
+                                   `id` int(10) NOT NULL AUTO_INCREMENT,
+                                   `province` varchar(255) NOT NULL,
+                                   `city` varchar(244) NOT NULL,
+                                   `city_code` varchar(100) NOT NULL,
+                                   `district` varchar(255) DEFAULT NULL,
+                                   `district_code` varchar(100) DEFAULT NULL,
+                                   `create_time` datetime NOT NULL,
+                                   `update_time` datetime NOT NULL,
+                                   `deleted` bit(1) NOT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-drop table if exists t_special_time_range;
+--
+-- Table structure for table `t_admin`
+--
 
-drop table if exists t_commodity;
+DROP TABLE IF EXISTS `t_admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_admin` (
+                           `id` int(10) NOT NULL AUTO_INCREMENT,
+                           `name` varchar(255) NOT NULL,
+                           `password` varchar(255) NOT NULL,
+                           `create_time` datetime NOT NULL,
+                           `update_time` datetime NOT NULL,
+                           `deleted` bit(1) NOT NULL,
+                           PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-drop table if exists t_store;
+--
+-- Table structure for table `t_cash_application`
+--
 
-drop table if exists t_user;
+DROP TABLE IF EXISTS `t_cash_application`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_cash_application` (
+                                      `id` int(10) NOT NULL AUTO_INCREMENT,
+                                      `user_id` int(10) NOT NULL,
+                                      `amount` int(6) NOT NULL,
+                                      `trade_no` varchar(255) NOT NULL,
+                                      `status` int(2) NOT NULL,
+                                      `create_time` datetime NOT NULL,
+                                      `update_time` datetime NOT NULL,
+                                      `deleted` bit(1) NOT NULL,
+                                      PRIMARY KEY (`id`),
+                                      KEY `FK_pk_cash_application_user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=194 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*==============================================================*/
-/* Table: t_cash_application                                    */
-/*==============================================================*/
-create table t_cash_application
-(
-    id          int(10)  not null auto_increment,
-    user_id     int(10)  not null,
-    amount      int(6)   not null,
-    status      int(2)   not null,
-    create_time datetime not null,
-    update_time datetime not null,
-    deleted     bit      not null,
-    primary key (id)
-);
+--
+-- Table structure for table `t_commission_log`
+--
 
-/*==============================================================*/
-/* Table: t_commodity                                           */
-/*==============================================================*/
-create table t_commodity
-(
-    id                     int(10)      not null auto_increment,
-    store_id               int(10)      not null,
-    buy_limit              int(4),
-    name                   varchar(255) not null,
-    description            text,
-    images                 varchar(255),
-    original_price         int(6),
-    current_price          int(6),
-    stock_count            int(4),
-    sale_count             int(4),
-    commission_1           int(6)       not null,
-    commission_2           int(6)       not null,
-    commission_3           int(6)       not null,
-    need_appointment       bit          not null,
-    buy_end_time           datetime,
-    appointment_start_time datetime,
-    appointment_end_time   datetime,
-    status                 int(2)       not null,
-    create_time            datetime     not null,
-    update_time            datetime     not null,
-    deleted                bit          not null,
-    primary key (id)
-);
+DROP TABLE IF EXISTS `t_commission_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_commission_log` (
+                                    `id` int(10) NOT NULL AUTO_INCREMENT,
+                                    `order_id` int(10) NOT NULL,
+                                    `promoter_id` int(10) NOT NULL,
+                                    `amount` int(10) NOT NULL,
+                                    `reason` int(2) NOT NULL,
+                                    `status` int(2) NOT NULL,
+                                    `create_time` datetime NOT NULL,
+                                    `update_time` datetime NOT NULL,
+                                    `deleted` bit(1) NOT NULL,
+                                    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3236 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*==============================================================*/
-/* Table: t_general_time_range                                  */
-/*==============================================================*/
-create table t_general_time_range
-(
-    id           int(10)  not null auto_increment,
-    commodity_id int(10)  not null,
-    day_of_week  int(1)   not null,
-    create_time  datetime not null,
-    update_time  datetime not null,
-    deleted      bit      not null,
-    primary key (id)
-);
+--
+-- Table structure for table `t_commodity`
+--
 
-/*==============================================================*/
-/* Table: t_general_time_slot                                   */
-/*==============================================================*/
-create table t_general_time_slot
-(
-    id                int(10)  not null auto_increment,
-    time_range_id     int(10)  not null,
-    start_time        time     not null,
-    end_time          time     not null,
-    count_upper_limit int(5)   not null,
-    booked_count      int(5)   not null,
-    create_time       datetime not null,
-    update_time       datetime not null,
-    deleted           bit      not null,
-    primary key (id)
-);
+DROP TABLE IF EXISTS `t_commodity`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_commodity` (
+                               `id` int(10) NOT NULL AUTO_INCREMENT,
+                               `store_id` int(10) NOT NULL,
+                               `buy_limit` int(4) DEFAULT NULL,
+                               `name` varchar(255) NOT NULL,
+                               `description` text,
+                               `images` varchar(255) DEFAULT NULL,
+                               `share_image` varchar(255) NOT NULL,
+                               `original_price` int(6) DEFAULT NULL,
+                               `current_price` int(6) DEFAULT NULL,
+                               `stock_count` int(4) DEFAULT NULL,
+                               `sale_count` int(4) DEFAULT NULL,
+                               `commission_1` int(6) NOT NULL,
+                               `commission_2` int(6) NOT NULL,
+                               `commission_3` int(6) NOT NULL,
+                               `need_appointment` bit(1) NOT NULL,
+                               `buy_end_time` datetime DEFAULT NULL,
+                               `appointment_start_time` datetime DEFAULT NULL,
+                               `appointment_end_time` datetime DEFAULT NULL,
+                               `status` int(2) NOT NULL,
+                               `create_time` datetime NOT NULL,
+                               `update_time` datetime NOT NULL,
+                               `deleted` bit(1) NOT NULL,
+                               PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*==============================================================*/
-/* Table: t_order                                               */
-/*==============================================================*/
-create table t_order
-(
-    id                    int(10)      not null auto_increment,
-    user_id               int(10)      not null,
-    commodity_id          int(10)      not null,
-    quantity              int(3)       not null,
-    store_id              int(10)      not null,
-    amount                int(10)      not null,
-    username              varchar(255) not null,
-    phone                 varchar(100) not null,
-    sn                    varchar(255) not null,
-    trade_no              varchar(255) not null,
-    commodity_name        varchar(255) not null,
-    commodity_description varchar(255),
-    status                int(2)       not null,
-    appointment_time      datetime,
-    create_time           datetime     not null,
-    update_time           datetime     not null,
-    deleted               bit          not null,
-    primary key (id)
-);
-alter table t_order
-    add column promoter_2_id int(10) null after promoter_id;
-alter table t_order
-    add column promoter_3_id int(10) null after promoter_2_id;
-/*==============================================================*/
-/* Table: t_special_time_range                                  */
-/*==============================================================*/
-create table t_special_time_range
-(
-    id           int(10)  not null auto_increment,
-    commodity_id int(10)  not null,
-    action_date  date     not null,
-    create_time  datetime not null,
-    update_time  datetime not null,
-    deleted      bit      not null,
-    primary key (id)
-);
+--
+-- Table structure for table `t_order`
+--
 
-/*==============================================================*/
-/* Table: t_special_time_slot                                   */
-/*==============================================================*/
-create table t_special_time_slot
-(
-    id                int(10)  not null auto_increment,
-    time_range_id     int(10)  not null,
-    start_time        time     not null,
-    end_time          time     not null,
-    count_upper_limit int(5)   not null,
-    booked_count      int(5)   not null,
-    create_time       datetime not null,
-    update_time       datetime not null,
-    deleted           bit      not null,
-    primary key (id)
-);
+DROP TABLE IF EXISTS `t_order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_order` (
+                           `id` int(10) NOT NULL AUTO_INCREMENT,
+                           `user_id` int(10) NOT NULL,
+                           `promoter_id` int(10) DEFAULT NULL,
+                           `promoter_2_id` int(10) DEFAULT NULL,
+                           `promoter_3_id` int(10) DEFAULT NULL,
+                           `commodity_id` int(10) NOT NULL,
+                           `quantity` int(3) NOT NULL,
+                           `store_id` int(10) NOT NULL,
+                           `amount` int(10) NOT NULL,
+                           `offline_payment_amount` int(10) DEFAULT NULL,
+                           `username` varchar(255) NOT NULL,
+                           `phone` varchar(100) NOT NULL,
+                           `sn` varchar(255) NOT NULL,
+                           `trade_no` varchar(255) NOT NULL,
+                           `commodity_name` varchar(255) NOT NULL,
+                           `commodity_description` varchar(255) DEFAULT NULL,
+                           `status` int(2) NOT NULL,
+                           `appointment_stock_id` int(10) DEFAULT NULL,
+                           `complete_time` datetime DEFAULT NULL,
+                           `create_time` datetime NOT NULL,
+                           `update_time` datetime NOT NULL,
+                           `deleted` bit(1) NOT NULL,
+                           PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2121 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*==============================================================*/
-/* Table: t_store                                               */
-/*==============================================================*/
-create table t_store
-(
-    id          int(10)      not null auto_increment,
-    name        varchar(255) not null,
-    keeper_name varchar(255) not null,
-    phone       varchar(255) not null,
-    longitude   varchar(100),
-    latitude    varchar(100),
-    province    varchar(100),
-    city        varchar(100),
-    region      varchar(100),
-    address     varchar(255),
-    login_name  varchar(255),
-    password    varchar(255),
-    create_time datetime     not null,
-    update_time datetime     not null,
-    deleted     bit          not null,
-    primary key (id)
-);
+--
+-- Table structure for table `t_refund_log`
+--
 
-/*==============================================================*/
-/* Table: t_user                                                */
-/*==============================================================*/
-create table t_user
-(
-    id                 int(10)      not null auto_increment,
-    nickname           varchar(255),
-    name               varchar(255),
-    phone              varchar(100),
-    wx_open_id         varchar(255),
-    wx_avatar          varchar(255),
-    role               int(2)       not null,
-    position_longitude varchar(255),
-    position_latitude  varchar(255),
-    position           varchar(255),
-    direct_income      int(6),
-    team_income        int(6),
-    withdrawals        int(6),
-    promo_code         varchar(255),
-    team_header_level  int(2),
-    leader_id          int(10),
-    wx_token_json      varchar(255),
-    promoter_phone     varchar(100) null,
-    promoter_wx_no     varchar(255) null,
-    promoter_name      varchar(255) null,
-    create_time        datetime     not null,
-    update_time        datetime     not null,
-    deleted            bit          not null,
-    primary key (id)
-);
+DROP TABLE IF EXISTS `t_refund_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_refund_log` (
+                                `id` int(10) NOT NULL AUTO_INCREMENT,
+                                `trade_no` varchar(255) NOT NULL,
+                                `order_id` int(10) NOT NULL,
+                                `order_amount` int(10) NOT NULL,
+                                `refund_amount` int(10) NOT NULL,
+                                `complete_time` datetime DEFAULT NULL,
+                                `status` int(2) NOT NULL,
+                                `create_time` datetime NOT NULL,
+                                `update_time` datetime NOT NULL,
+                                `deleted` bit(1) NOT NULL,
+                                PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=149 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-alter table t_user
-    add column promoter_phone varchar(100) null after wx_token_json;
-alter table t_user
-    add column promoter_wx_no varchar(255) null after promoter_phone;
-alter table t_user
-    add column promoter_name varchar(255) null after promoter_wx_no;
+--
+-- Table structure for table `t_stock`
+--
 
-alter table t_user
-    add column promoter_id int(10) null after leader_id;
-alter table t_cash_application
-    add constraint FK_pk_cash_application_user foreign key (user_id)
-        references t_user (id) on delete restrict on update restrict;
+DROP TABLE IF EXISTS `t_stock`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_stock` (
+                           `id` int(10) NOT NULL AUTO_INCREMENT,
+                           `commodity_id` int(10) NOT NULL,
+                           `store_id` int(10) NOT NULL,
+                           `action_date` date NOT NULL,
+                           `day_of_week` int(1) NOT NULL,
+                           `start_time` time NOT NULL,
+                           `end_time` time NOT NULL,
+                           `stock_count` int(5) NOT NULL,
+                           `booked_count` int(5) NOT NULL,
+                           `complete_count` int(5) NOT NULL,
+                           `create_time` datetime NOT NULL,
+                           `update_time` datetime NOT NULL,
+                           `deleted` bit(1) NOT NULL,
+                           PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1838 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-alter table t_commodity
-    add constraint FK_pk_commodity_and_store foreign key (store_id)
-        references t_store (id) on delete restrict on update restrict;
+--
+-- Table structure for table `t_store`
+--
 
-alter table t_general_time_range
-    add constraint FK_fk_general_time_range_and_commodity foreign key (commodity_id)
-        references t_commodity (id) on delete restrict on update restrict;
+DROP TABLE IF EXISTS `t_store`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_store` (
+                           `id` int(10) NOT NULL AUTO_INCREMENT,
+                           `name` varchar(255) NOT NULL,
+                           `keeper_name` varchar(255) NOT NULL,
+                           `phone` varchar(255) NOT NULL,
+                           `longitude` double DEFAULT NULL,
+                           `latitude` double DEFAULT NULL,
+                           `province` varchar(100) DEFAULT NULL,
+                           `city` varchar(100) DEFAULT NULL,
+                           `region` varchar(100) DEFAULT NULL,
+                           `address` varchar(255) DEFAULT NULL,
+                           `address_index_id` int(10) DEFAULT NULL,
+                           `order_num` int(10) DEFAULT NULL,
+                           `login_name` varchar(255) DEFAULT NULL,
+                           `password` varchar(255) DEFAULT NULL,
+                           `wx_open_id` varchar(255) DEFAULT NULL,
+                           `create_time` datetime NOT NULL,
+                           `update_time` datetime NOT NULL,
+                           `deleted` bit(1) NOT NULL,
+                           PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-alter table t_general_time_slot
-    add constraint FK_Reference_5 foreign key (time_range_id)
-        references t_general_time_range (id) on delete restrict on update restrict;
+--
+-- Table structure for table `t_user`
+--
 
-alter table t_order
-    add constraint FK_pk_order_commodity foreign key (commodity_id)
-        references t_commodity (id) on delete restrict on update restrict;
+DROP TABLE IF EXISTS `t_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_user` (
+                          `id` int(10) NOT NULL AUTO_INCREMENT,
+                          `nickname` varchar(255) DEFAULT NULL,
+                          `name` varchar(255) DEFAULT NULL,
+                          `phone` varchar(100) DEFAULT NULL,
+                          `wx_open_id` varchar(255) DEFAULT NULL,
+                          `wx_avatar` varchar(255) DEFAULT NULL,
+                          `role` int(2) NOT NULL,
+                          `position_longitude` varchar(255) DEFAULT NULL,
+                          `position_latitude` varchar(255) DEFAULT NULL,
+                          `position` varchar(255) DEFAULT NULL,
+                          `direct_income` int(6) DEFAULT NULL,
+                          `team_income` int(6) DEFAULT NULL,
+                          `withdrawals` int(6) DEFAULT NULL,
+                          `promo_code` varchar(255) DEFAULT NULL,
+                          `team_header_level` int(2) DEFAULT NULL,
+                          `leader_id` int(10) DEFAULT NULL,
+                          `promoter_id` int(10) DEFAULT NULL,
+                          `wx_token_json` mediumtext,
+                          `promoter_phone` varchar(100) DEFAULT NULL,
+                          `promoter_wx_no` varchar(255) DEFAULT NULL,
+                          `promoter_name` varchar(255) DEFAULT NULL,
+                          `create_time` datetime NOT NULL,
+                          `update_time` datetime NOT NULL,
+                          `deleted` bit(1) NOT NULL,
+                          PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11578 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-alter table t_order
-    add constraint FK_pk_order_user foreign key (user_id)
-        references t_user (id) on delete restrict on update restrict;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-alter table t_special_time_range
-    add constraint FK_fk_special_time_range_and_commodity foreign key (commodity_id)
-        references t_commodity (id) on delete restrict on update restrict;
-
-alter table t_special_time_slot
-    add constraint FK_Reference_4 foreign key (time_range_id)
-        references t_special_time_range (id) on delete restrict on update restrict;
-
-
-drop table if exists t_amint;
-create table t_admin
-(
-    id          int(10)      not null auto_increment primary key,
-    name        varchar(255) not null,
-    password    varchar(255) not null,
-    create_time datetime     not null,
-    update_time datetime     not null,
-    deleted     bit          not null
-);
-
+-- Dump completed on 2019-07-30 16:06:36

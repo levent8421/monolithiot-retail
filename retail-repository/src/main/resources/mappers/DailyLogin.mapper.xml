@@ -16,10 +16,12 @@
         where dl.deleted = false
     </sql>
     <resultMap id="rm_base" type="club.xyes.zkh.retail.commons.entity.DailyLogin">
-        <id column="adm_id" property="id"/>
-        <result column="adm_create_time" property="createTime"/>
-        <result column="adm_update_time" property="updateTime"/>
-        <result column="adm_deleted" property="deleted"/>
+        <id column="dl_id" property="id"/>
+        <result column="dl_user_id" property="userId"/>
+        <result column="dl_login_date" property="loginDate"/>
+        <result column="dl_create_time" property="createTime"/>
+        <result column="dl_update_time" property="updateTime"/>
+        <result column="dl_deleted" property="deleted"/>
     </resultMap>
     <select id="countByUserAndDate" resultType="Integer">
         select count(0)

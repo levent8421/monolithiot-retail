@@ -119,6 +119,11 @@ public class Order extends AbstractEntity {
     @Column(name = "username", nullable = false)
     private String username;
     /**
+     * 送货地址
+     */
+    @Column(name = "address")
+    private String address;
+    /**
      * 电话号
      */
     @Column(name = "phone", length = 100, nullable = false)
