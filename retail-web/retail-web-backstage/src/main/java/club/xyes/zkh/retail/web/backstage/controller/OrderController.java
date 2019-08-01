@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Create by 郭文梁 2019/6/13 0013 09:48
@@ -126,7 +127,7 @@ public class OrderController extends AbstractEntityController<Order> {
     }
 
     /**
-     * 核销订单
+     * 设置订单状态为已完成
      *
      * @param id ID
      * @return GR
@@ -134,7 +135,29 @@ public class OrderController extends AbstractEntityController<Order> {
     @PostMapping("/{id}/complete")
     public GeneralResult<Order> complete(@PathVariable("id") Integer id) {
         val order = orderService.require(id);
-        val res = orderService.complete(order, orderCompleteListener);
+        if (!Objects.equals(order.getStatus(), Order.STATUS_DELIVER)) {
+            throw new BadRequestException("必须先发货再完成！");
+        }
+        order.setStatus(Order.STATUS_COMPLETE);
+        val res = orderService.updateById(order);
+        return GeneralResult.ok(res);
+    }
+
+    /**
+     * 设置订单状态为已发货
+     *
+     * @param id 订单ID
+     * @return GR
+     */
+    @PostMapping("/{id}/deliver")
+    public GeneralResult<Order> deliver(@PathVariable("id") Integer id) {
+        val order = orderService.require(id);
+        if (!(Objects.equals(order.getStatus(), Order.STATUS_BOOKED)
+                || Objects.equals(order.getStatus(), Order.STATUS_PAID))) {
+            throw new BadRequestException("订单状态非法[" + order.getStatus() + "]!");
+        }
+        order.setStatus(Order.STATUS_DELIVER);
+        val res = orderService.updateById(order);
         return GeneralResult.ok(res);
     }
 }

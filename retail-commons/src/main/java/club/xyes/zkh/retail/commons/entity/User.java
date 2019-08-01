@@ -105,7 +105,7 @@ public class User extends AbstractEntity {
     /**
      * 连续签到次数
      */
-    @Column(name = "daily_login_time", length = 6)
+    @Column(name = "daily_login_times", length = 6)
     private Integer dailyLoginTimes;
     /**
      * 已提现金额

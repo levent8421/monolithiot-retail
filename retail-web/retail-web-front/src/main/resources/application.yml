@@ -18,11 +18,11 @@ mybatis:
   mapper-locations: classpath:mappers/*.mapper.xml
   type-aliases-package: club.xyes.zkh.retail.common.entity
 wx:
-  appId: wx45725d38c171c33f
-  secret: 860329c6675c5a7ac587e0533a57f188
-  mchId: 1538466881
-  ip: 47.101.72.16
-  notifyUrl: http://wz.jinguanjiazhifu.com/retail/service/pay/notify
-  signKey: 940647dfe9e43f176ce4dd9afde713d5
+  appId: wx62f498b5f0e523fb
+  secret: 0467d8f75e559660d8f2d64a56cb72ce
+  mchId: 1540413381
+  ip: 47.96.151.141
+  notifyUrl: http://wxapi.berrontech.com/service/pay/notify
+  signKey: 96e79218965eb72c92a549dd5a330112
 sms:
-  apiKey: 39c8673e0f6be3d248c6443205684a54
+  apiKey: 472dde7539dfb2c0ea2107be4d34dc63

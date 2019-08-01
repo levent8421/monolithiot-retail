@@ -14,6 +14,7 @@
         o.offline_payment_amount o_offline_payment_amount,
         o.username              o_username,
         o.phone                 o_phone,
+        o.address               o_address,
         o.sn                    o_sn,
         o.trade_no              o_trade_no,
         o.commodity_name        o_commodity_name,
@@ -44,6 +45,7 @@
         <result column="o_offline_payment_amount" property="offlinePaymentAmount"/>
         <result column="o_username" property="username"/>
         <result column="o_phone" property="phone"/>
+        <result column="o_address" property="address"/>
         <result column="o_sn" property="sn"/>
         <result column="o_trade_no" property="tradeNo"/>
         <result column="o_commodity_name" property="commodityName"/>

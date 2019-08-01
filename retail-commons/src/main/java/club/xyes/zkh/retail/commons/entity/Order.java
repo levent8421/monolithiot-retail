@@ -53,6 +53,10 @@ public class Order extends AbstractEntity {
      */
     public static final int STATUS_REFUND_FAIL = 0x07;
     /**
+     * 状态 待收货
+     */
+    public static final int STATUS_DELIVER = 0x08;
+    /**
      * 用户ID
      */
     @Column(name = "user_id", length = 10, nullable = false)
