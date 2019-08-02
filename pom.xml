@@ -37,5 +37,11 @@
                 <activationProfile>release</activationProfile>
             </properties>
         </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <activationProfile>test</activationProfile>
+            </properties>
+        </profile>
     </profiles>
 </project>
