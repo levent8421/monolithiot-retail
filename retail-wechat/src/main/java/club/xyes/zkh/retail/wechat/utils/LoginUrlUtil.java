@@ -1,5 +1,11 @@
 package club.xyes.zkh.retail.wechat.utils;
 
+import club.xyes.zkh.retail.commons.context.ApplicationConstants;
+import club.xyes.zkh.retail.commons.exception.InternalServerErrorException;
+import lombok.val;
+
+import java.net.URLEncoder;
+
 /**
  * Create by 郭文梁 2019/6/5 0005 17:29
  * LoginUrlUtil
@@ -17,10 +23,17 @@ public class LoginUrlUtil {
      * @return 二维码内容（分享链接）
      */
     public static String getShareLoginUrl(Integer commodityId, String promoCode) {
-        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45725d38c171c33f&redirect_uri=http%3a%2f%2fwz.jinguanjiazhifu.com%2fretail%2fservice%2fapi%2fopen%2fcommodity%2f"
-                + commodityId
-                + "%2fdetail-page&response_type=code&scope=snsapi_userinfo&state="
-                + promoCode
-                + "#wechat_redirect";
+        try {
+            val host = URLEncoder.encode(ApplicationConstants.BASE_URL, ApplicationConstants.DEFAULT_CHARSET);
+            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx62f498b5f0e523fb&redirect_uri="
+                    + host
+                    + "%2fservice%2fapi%2fopen%2fcommodity%2f"
+                    + commodityId
+                    + "%2fdetail-page&response_type=code&scope=snsapi_userinfo&state="
+                    + promoCode
+                    + "#wechat_redirect";
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Encode host " + ApplicationConstants.BASE_URL + " Error!");
+        }
     }
 }
