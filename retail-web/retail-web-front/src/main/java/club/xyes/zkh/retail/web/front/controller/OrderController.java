@@ -125,7 +125,6 @@ public class OrderController extends AbstractEntityController<Order> {
         notEmpty(param.getPhone(), BadRequestException.class, "电话必填");
         notNull(param.getQuantity(), BadRequestException.class, "购买数量必填");
         notEmpty(param.getUsername(), BadRequestException.class, "姓名必填");
-        notEmpty(param.getAddress(), BadRequestException.class, "收货地址必填！");
         @NotNull Commodity commodity = commodityService.require(param.getCommodityId());
         @NotNull User user = requireCurrentUser(userService);
         Order order = createOrder(user, commodity, param);
