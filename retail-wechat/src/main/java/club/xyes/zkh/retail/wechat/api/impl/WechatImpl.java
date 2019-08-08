@@ -14,12 +14,19 @@ import club.xyes.zkh.retail.wechat.props.WechatConfig;
 import club.xyes.zkh.retail.wechat.utils.WxSignUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.dom4j.DocumentException;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +41,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @Slf4j
-public class WechatImpl extends AbstractHttpApi implements Wechat {
+public class WechatImpl extends AbstractHttpApi implements Wechat, ApplicationContextAware {
+    private static final String DEV_PROFILE_NAME = "dev";
     /**
      * 发送模板消息失败 原因是需要关注的errcode
      */
@@ -78,7 +86,7 @@ public class WechatImpl extends AbstractHttpApi implements Wechat {
     /**
      * 发送模板消息，接口地址
      */
-    public static final String WX_TEMPLATE_MSG_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s";
+    private static final String WX_TEMPLATE_MSG_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s";
     private static final int NONCE_STR_LEN = 15;
     /**
      * 微信红包发送者名称
@@ -109,7 +117,10 @@ public class WechatImpl extends AbstractHttpApi implements Wechat {
      * PRODUCT_8:税务刮奖
      */
     private static final String WITHDRAW_SCENE_ID = "PRODUCT_5";
-
+    /**
+     * 应用上下文
+     */
+    private ApplicationContext applicationContext;
     /**
      * AccessToken缓存
      */
@@ -123,16 +134,19 @@ public class WechatImpl extends AbstractHttpApi implements Wechat {
 
     public WechatImpl(WechatConfig wechatConfig) {
         this.wechatConfig = wechatConfig;
-        initKey();
     }
 
     /**
      * 初始化证书文件
      */
+    @PostConstruct
     private void initKey() {
         String keyFile = wechatConfig.getKeyFile();
         String password = wechatConfig.getKeyPassword();
-        this.keyStore = KeyStoreUtils.loadKey(keyFile, password);
+        val activeProfiles = new ArrayList<String>(Arrays.asList(applicationContext.getEnvironment().getActiveProfiles()));
+        if (!activeProfiles.contains(DEV_PROFILE_NAME)) {
+            this.keyStore = KeyStoreUtils.loadKey(keyFile, password);
+        }
     }
 
     @Override
@@ -407,5 +421,10 @@ public class WechatImpl extends AbstractHttpApi implements Wechat {
             log.warn("Send template msg error, url=[{}], body=[{}]", url, postBody, e);
             throw new InternalServerErrorException("Send template msg error[IOException]!", e);
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

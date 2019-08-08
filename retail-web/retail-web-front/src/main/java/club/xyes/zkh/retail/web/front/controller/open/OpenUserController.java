@@ -30,7 +30,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/open/user")
 @Slf4j
-public class OpenUserController extends AbstractEntityController<User> {
+public class    OpenUserController extends AbstractEntityController<User> {
     /**
      * 团队加入成功的页面名称
      */
