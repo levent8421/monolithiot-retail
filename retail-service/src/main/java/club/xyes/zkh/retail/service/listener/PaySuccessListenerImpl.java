@@ -229,8 +229,12 @@ public class PaySuccessListenerImpl implements OrderService.PaySuccessListener {
             order.setStatus(Order.STATUS_NEED_BOOKED);
         } else {
             order.setStatus(Order.STATUS_PAID);
-            final SmsSingleSend sendRes = yunPian.sendPaymentSuccessNotifySms(order, storeService.require(commodity.getStoreId()));
-            log.info("Send Sms Result:[{}]", sendRes);
+            try {
+                final SmsSingleSend sendRes = yunPian.sendPaymentSuccessNotifySms(order, storeService.require(commodity.getStoreId()));
+                log.info("Send Sms Result:[{}]", sendRes);
+            } catch (Exception e) {
+                log.error("Error on send payment success sms,", e);
+            }
         }
         orderService.updateById(order);
     }

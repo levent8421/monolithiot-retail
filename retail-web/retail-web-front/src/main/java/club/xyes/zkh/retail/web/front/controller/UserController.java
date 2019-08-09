@@ -35,7 +35,7 @@ import java.util.Objects;
 @MapperScan(ApplicationConstants.Context.MAPPER_PACKAGE)
 @Slf4j
 public class UserController extends AbstractEntityController<User> {
-    private static final String TEAM_QR_CODE_PREFIX = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx45725d38c171c33f&redirect_uri=http%3a%2f%2fwz.jinguanjiazhifu.com%2fretail%2fservice%2fapi%2fopen%2fuser%2f";
+    private static final String TEAM_QR_CODE_PREFIX = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx62f498b5f0e523fb&redirect_uri=http%3a%2f%2fwxapi.berrontech.com%2fservice%2fapi%2fopen%2fuser%2f";
     private static final String TEAM_QR_CODE_SUFFIX = "%2fjoin&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
     private static final int QR_CODE_WIDTH = 300;
     private static final int QR_CODE_HEIGHT = 300;

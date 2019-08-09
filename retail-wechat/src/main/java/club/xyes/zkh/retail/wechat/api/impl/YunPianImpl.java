@@ -30,12 +30,12 @@ public class YunPianImpl implements YunPian {
      * 预约成功短信通知模板
      */
     private static final String APPOINTMENT_NOTIFY_SMS_TEMPLATE =
-            "【江苏智客汇】您已成功购买%s，预约时间%s %s到%s，电子码%s";
+            "【磐石电气】您已成功购买%s，预约时间%s %s到%s，电子码%s";
     /**
      * 支付成功通知短信
      */
     private static final String PAYMENT_SUCCESS_NOTIFY_SMS_TEMPLATE =
-            "【江苏智客汇】您已成功购买%s，电子码%s，详情请关注小龙侠优品公总号";
+            "【磐石电气】您已成功购买%s，电子码%s，详情请关注贝榕公众号";
     private final YunpianClient yunpianClient;
 
     public YunPianImpl(YunpianClient yunpianClient) {
