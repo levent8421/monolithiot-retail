@@ -3,6 +3,7 @@ package club.xyes.zkh.retail.service.general.impl;
 import club.xyes.zkh.retail.commons.context.ApplicationConstants;
 import club.xyes.zkh.retail.commons.entity.User;
 import club.xyes.zkh.retail.commons.exception.BadRequestException;
+import club.xyes.zkh.retail.commons.utils.DateTimeUtils;
 import club.xyes.zkh.retail.commons.utils.RandomUtils;
 import club.xyes.zkh.retail.repository.dao.mapper.UserMapper;
 import club.xyes.zkh.retail.service.basic.impl.AbstractServiceImpl;
@@ -11,6 +12,7 @@ import club.xyes.zkh.retail.wechat.api.Wechat;
 import club.xyes.zkh.retail.wechat.dto.*;
 import club.xyes.zkh.retail.wechat.props.WechatConfig;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -163,10 +165,12 @@ public class UserServiceImpl extends AbstractServiceImpl<User> implements UserSe
      * @param leader 上级用户
      */
     private void sendJoinSuccessNotifyTemplateMsg(User user, User leader) {
+        val username = user.getPromoterName() + "(" + user.getPromoterPhone() + ")";
+        val date = DateTimeUtils.format(DateTimeUtils.now(), ApplicationConstants.DATE_TIME_FORMAT);
         final Map<String, TemplateMsgData> data = new HashMap<>(16);
         data.put("first", new TemplateMsgData("会员邀请加入成功", TemplateMsgData.DEFAULT_COLOR));
-        data.put("keyword1", new TemplateMsgData(user.getPromoterName(), TemplateMsgData.DEFAULT_COLOR));
-        data.put("keyword2", new TemplateMsgData(user.getPromoterPhone(), TemplateMsgData.DEFAULT_COLOR));
+        data.put("keyword1", new TemplateMsgData(username, TemplateMsgData.DEFAULT_COLOR));
+        data.put("keyword2", new TemplateMsgData(date, TemplateMsgData.DEFAULT_COLOR));
         data.put("remark", new TemplateMsgData("感谢您的使用", TemplateMsgData.DEFAULT_COLOR));
 
         final WxTemplateMsgParam msgParam = new WxTemplateMsgParam();

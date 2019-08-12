@@ -246,13 +246,15 @@ public class PaySuccessListenerImpl implements OrderService.PaySuccessListener {
      */
     private void sendNotifyWxMsg(Order order) {
         @NotNull final User user = userService.require(order.getUserId());
+        val date = DateTimeUtils.format(DateTimeUtils.now(), ApplicationConstants.DATE_TIME_FORMAT);
 
         Map<String, TemplateMsgData> data = new HashMap<>(16);
         data.put("first", new TemplateMsgData("微信付款成功", TemplateMsgData.DEFAULT_COLOR));
         data.put("remark", new TemplateMsgData("感谢您的使用", TemplateMsgData.DEFAULT_COLOR));
         data.put("keyword1", new TemplateMsgData(order.getSn(), TemplateMsgData.DEFAULT_COLOR));
-        data.put("keyword2", new TemplateMsgData(MoneyUtils.fen2Yuan(order.getAmount()), TemplateMsgData.DEFAULT_COLOR));
+        data.put("keyword2", new TemplateMsgData(date, TemplateMsgData.DEFAULT_COLOR));
         data.put("keyword3", new TemplateMsgData("微信在线支付", TemplateMsgData.DEFAULT_COLOR));
+        data.put("keyword4", new TemplateMsgData(MoneyUtils.fen2Yuan(order.getAmount()), TemplateMsgData.DEFAULT_COLOR));
 
 
         final WxTemplateMsgParam msgParam = new WxTemplateMsgParam();
@@ -275,11 +277,11 @@ public class PaySuccessListenerImpl implements OrderService.PaySuccessListener {
     private void sendCommissionNotifyMsg(String title, String type, int amount, String openId) {
         final Map<String, TemplateMsgData> data = new HashMap<>(16);
         final String timeStr = DateTimeUtils.format(DateTimeUtils.now(), ApplicationConstants.DATE_TIME_FORMAT);
-        final String amountStr = MoneyUtils.fen2Yuan(amount) + "元";
+        final String amountStr = MoneyUtils.fen2Yuan(amount) + "元(" + type + ")";
         data.put("first", new TemplateMsgData(title, TemplateMsgData.DEFAULT_COLOR));
         data.put("remark", new TemplateMsgData("返佣已入账，请前往[我的]>[我的金库]查看", TemplateMsgData.DEFAULT_COLOR));
-        data.put("keyword1", new TemplateMsgData(type, TemplateMsgData.DEFAULT_COLOR));
-        data.put("keyword2", new TemplateMsgData(amountStr, TemplateMsgData.DEFAULT_COLOR));
+        data.put("keyword1", new TemplateMsgData(amountStr, TemplateMsgData.DEFAULT_COLOR));
+        data.put("keyword2", new TemplateMsgData(timeStr, TemplateMsgData.DEFAULT_COLOR));
         data.put("keyword3", new TemplateMsgData(timeStr, TemplateMsgData.DEFAULT_COLOR));
 
         final WxTemplateMsgParam param = new WxTemplateMsgParam();

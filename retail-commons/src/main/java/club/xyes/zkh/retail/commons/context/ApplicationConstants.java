@@ -147,7 +147,7 @@ public class ApplicationConstants {
         /**
          * （模板ID）支付成功通知模板消息
          */
-        public static final String PAY_NOTIFY_MSG_TEMPLATE_ID = "1nzct9OjkHCEoefiJhd9UtsCIQzpxw1faNADwCMWI3w";
+        public static final String PAY_NOTIFY_MSG_TEMPLATE_ID = "9wNylBPA-RpETtyhg5Xd0TLDsZi8kF1NmH1mOkdSV1E";
         /**
          * （模板ID）预约成功模板消息ID
          */
@@ -155,10 +155,10 @@ public class ApplicationConstants {
         /**
          * （模板ID）会员加入成功通知消息模板
          */
-        public static final String JOIN_TEAM_NOTIFY_MSG_TEMPLATE_ID = "nVFttg8na8cwf9ozhF5r93P1h-P1w8i_6EIbF6jWeJc";
+        public static final String JOIN_TEAM_NOTIFY_MSG_TEMPLATE_ID = "_eS_ckFnVcZU30nODh2aq_uClZD6c0MHmrzBhjAapIc";
         /**
          * （模板ID）返现提醒模板消息
          */
-        public static final String COMMISSION_NOTIFY_TEMPLATE_MSG_ID = "u7p2z8ciDCOhmSUhX3BPbLPFjyYgLDOf2qQljLwz4WM";
+        public static final String COMMISSION_NOTIFY_TEMPLATE_MSG_ID = "0avBuOP76vd5QYlD9Le3sc3AP3XnklhY2qXS9RrMcCE";
     }
 }
