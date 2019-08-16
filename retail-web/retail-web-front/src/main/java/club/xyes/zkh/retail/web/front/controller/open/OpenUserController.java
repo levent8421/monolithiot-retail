@@ -30,11 +30,12 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/open/user")
 @Slf4j
-public class    OpenUserController extends AbstractEntityController<User> {
+public class OpenUserController extends AbstractEntityController<User> {
     /**
      * 团队加入成功的页面名称
      */
     private static final String JOIN_SUCCESS_VIEW_NAME = "redirect:" + ApplicationConstants.BASE_URL + "/index.html#/join-team?leader=%s&leader_name=%s";
+    private static final String ERROR_VIEW_NAME = "error";
     private final UserService userService;
     private final AccessTokenEncoder accessTokenEncoder;
 
@@ -107,7 +108,9 @@ public class    OpenUserController extends AbstractEntityController<User> {
         }
         final User user = userService.loginByOAuthCode(code);
         if (Objects.equals(leader.getId(), user.getId())) {
-            throw new BadRequestException("你不能加入自己的团队");
+            ModelAndView mv = new ModelAndView(ERROR_VIEW_NAME);
+            mv.addObject("errMsg", "你不能加入自己的团队");
+            return mv;
         }
         ModelAndView mv = new ModelAndView();
         final String viewName = String.format(JOIN_SUCCESS_VIEW_NAME, leader.getId(),

@@ -11,7 +11,7 @@ site:
   staticFilePath: D:\xbb\static\retail
 wx:
   keyFile: E:\xbb\retail\weixinkey.p12
-  keyPassword: 1538466881
+  keyPassword: 1540413381
 logging:
   level:
     club.xyes.zkh.retail: debug

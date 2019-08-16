@@ -251,7 +251,7 @@ public class WechatImpl extends AbstractHttpApi implements Wechat, ApplicationCo
         params.put("sign", sign);
         String postBody = XmlUtils.asXml(params, "xml");
         String resp = postXml(WX_PAY_URL, postBody);
-        log.debug("Pay http request : >>[{}] <<[{}]", postBody, resp);
+        log.info("Pay http request : >>[{}] <<[{}]", postBody, resp);
         WxPayResult payResult;
         try {
             payResult = XmlUtils.parseObject(resp, WxPayResult.class);
@@ -374,6 +374,7 @@ public class WechatImpl extends AbstractHttpApi implements Wechat, ApplicationCo
         params.put("sign", sign);
         final String xml = XmlUtils.asXml(params, "xml");
         final String response = postXmlWithP12(WX_REFUND_URL, xml, keyStore, wechatConfig.getKeyPassword());
+        log.info("Http refund request url=[{}], request body=[{}], response body=[{}]", WX_REFUND_URL, xml, response);
         try {
             return XmlUtils.parseObject(response, WxRefundResult.class);
         } catch (DocumentException e) {

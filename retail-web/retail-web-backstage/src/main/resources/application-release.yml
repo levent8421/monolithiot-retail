@@ -11,7 +11,7 @@ site:
   staticFilePath: /var/www/static0.berrontech.com/wechat
 wx:
   keyFile: /opt/wechat/weixinkey.p12
-  keyPassword: 1538466881
+  keyPassword: 1540413381
 logging:
   level:
     club.xyes.zkh.retail: info

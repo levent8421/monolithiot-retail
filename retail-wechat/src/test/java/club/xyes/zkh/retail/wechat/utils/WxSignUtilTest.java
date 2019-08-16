@@ -5,6 +5,9 @@ import club.xyes.zkh.retail.wechat.dto.WxRefundNotifyParam;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 public class WxSignUtilTest {
 
@@ -17,5 +20,22 @@ public class WxSignUtilTest {
         String key = "0dd1c031210041f0963526448e163f58";
         final String result = WxSignUtil.decodeNotifyReqInfo(reqInfo, key);
         log.debug("[{}]", result);
+    }
+
+    @Test
+    public void testSign() {
+        Map<String, String> param = new HashMap<>(16);
+        param.put("nonce_str", "2mzjCy3f2NbXwk1");
+        param.put("out_trade_no", "c4cfe396bb1240b5a9bfa58aadfb9ffb");
+        param.put("out_refund_no", "ce68ac26afe64c9ba3ea606994bd3fcc");
+        param.put("appid", "wx62f498b5f0e523fb");
+        param.put("total_fee", "38800");
+        param.put("refund_fee", "38800");
+        param.put("mch_id", "1540413381");
+        param.put("notify_url", "");
+        param.put("sign_type", "MD5");
+        String sign = WxSignUtil.signMd5(param, "96e79218965eb72c92a549dd5a330112");
+        param.put("sign", sign);
+        log.debug(XmlUtils.asXml(param, "xml"));
     }
 }
