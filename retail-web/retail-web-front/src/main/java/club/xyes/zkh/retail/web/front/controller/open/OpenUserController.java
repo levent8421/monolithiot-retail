@@ -35,7 +35,7 @@ public class OpenUserController extends AbstractEntityController<User> {
      * 团队加入成功的页面名称
      */
     private static final String JOIN_SUCCESS_VIEW_NAME = "redirect:" + ApplicationConstants.BASE_URL + "/index.html#/join-team?leader=%s&leader_name=%s";
-    private static final String ERROR_VIEW_NAME = "error";
+    private static final String ERROR_VIEW_NAME = "sys-error";
     private final UserService userService;
     private final AccessTokenEncoder accessTokenEncoder;
 
